@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <script src="./main.js"></script>
+
+    <script>
+      function square(x) {
+        let y;
+        for (let i = 0; i < 1000000; i++) y = x * x;
+      }
+
+      let x;
+      let antes = new Date().getTime();
+
+      // ou com 10000000
+
+      // diferença de 1/4 pra bem menos, porque depois de um tempo ele otimiza
+      square(100);
+      console.log(new Date().getTime() - antes + "ms");
+
+      Module.onRuntimeInitialized = function() {
+        let antes = new Date().getTime();
+        Module._main(100);
+        console.log("wasm " + (new Date().getTime() - antes) + "ms");
+      };
+    </script>
+
+    <title>Simple template</title>
+  </head>
+  <body></body>
+</html>
