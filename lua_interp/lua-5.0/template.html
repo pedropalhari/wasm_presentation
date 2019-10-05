@@ -6,19 +6,33 @@
     <script src="./main.js"></script>
 
     <script>
+      var x;
       Module.onRuntimeInitialized = function() {
-        console.log(
-          Module.ccall(
+        x = function() {
+          let lua = document.getElementById("ta").value;
+
+          document.getElementById("res").value = Module.ccall(
             "runString",
             "string",
             ["string"],
-            ["function bora()\n return 10 * 2;\n end"]
-          )
-        );
+            [lua]
+          );
+        };
       };
     </script>
 
     <title>Simple template</title>
   </head>
-  <body></body>
+  <body>
+    <textarea style="width: 400px; height: 400px;" id="ta"></textarea>
+
+    <br />
+    <br />
+    <button onclick="x()">Compila pra nois ai pai</button>
+
+    <br />
+    <br />
+
+    <textarea style="width: 400px; height: 200px;" id="res"></textarea>
+  </body>
 </html>

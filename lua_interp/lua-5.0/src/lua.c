@@ -63,6 +63,8 @@ char *runString(char *s)
   return buffer;
 }
 
+//https://www.lua.org/pil/24.1.html
+
 int main(void)
 {
   char buffer[512];
@@ -75,10 +77,10 @@ int main(void)
   luaopen_string(L);         /* opens the string lib. */
   luaopen_math(L);           /* opens the math lib. */
 
-  error = luaL_loadbuffer(L, "function bora()\n return 10;\n end\0", strlen("function bora()\n return 10;\n end\0"), "line") ||
+  error = luaL_loadbuffer(L, "function main()\nreturn 30 * 4;\nend", strlen("function main()\nreturn 30 * 4;\nend"), "line") ||
           lua_pcall(L, 0, 0, 0);
 
-  lua_getglobal(L, "bora");
+  lua_getglobal(L, "main");
   lua_call(L, 0, 1);
 
   printf("%s", stackDump(L, buffer));
