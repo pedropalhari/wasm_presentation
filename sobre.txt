@@ -1,0 +1,26 @@
+WebAssembly
+|-> Premissas
+  |-> Qualquer linguagem compila para um bytecode (assembly) unico que todos os navegadores reconhecem
+    |-> Padrão
+  |-> Compiladores ao invés de irem para um instruction set X, vão para WASM 
+  |-> Otimizações (-O3, exemplo)
+    |-> Feito pelo compilador
+        |-> Como compilador funciona (legal falar, separar)
+
+|-> O que é
+  |-> Código compilado bytecode lido pelo navegador
+    |-> Bytes
+    |-> Carregados em runtime
+    |-> Rodados pelo navegador
+  |-> Module, CCall, CModule
+    |-> Flags de compilação
+    |-> Expõem interfaces no .js que permite chamar os módulos em C
+
+|-> Compilando
+  |-> source ./emsdk_env.sh --build=Release
+  |-> emcc main.cpp -o main.js --std=c++11 -s "EXPORTED_FUNCTIONS=['_square']"
+
+|-> Executando
+  |-> Primeira vez o WASM demora pra executar
+  |-> Depois ele cacheia e vai BEM mais rápido
+  |-> JS também cacheia, mas em runtime ele gera perfis das funções em uma espécie de Bytecode (otimizado, varia de engine V8) 
