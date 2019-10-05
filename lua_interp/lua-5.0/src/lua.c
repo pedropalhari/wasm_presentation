@@ -4,10 +4,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-static char *stackDump(lua_State *L)
+static char *stackDump(lua_State *L, char *buffer)
 {
-  char buffer[512];
-  char auxBuffer[256];
   int i;
   int top = lua_gettop(L);
   for (i = 1; i <= top; i++)
@@ -25,25 +23,49 @@ static char *stackDump(lua_State *L)
       break;
 
     case LUA_TNUMBER: /* numbers */
-      gcvt(lua_tonumber(L, i), 4, auxBuffer);
-      //strcat(buffer, auxBuffer);
+      sprintf(buffer, "%g", lua_tonumber(L, i));
       break;
 
     default: /* other values */
-      //strcat(buffer, lua_typename(L, t));
+      sprintf(buffer, "%s", lua_typename(L, t));
       break;
     }
     printf("  "); /* put a separator */
   }
   printf("\n"); /* end the listing */
+
+  return buffer;
 }
 
 char *runString(char *s)
 {
+  char buffer[512];
+  int error;
+  lua_State *L = lua_open(); /* opens Lua */
+  luaopen_base(L);           /* opens the basic library */
+  luaopen_table(L);          /* opens the table library */
+  luaopen_io(L);             /* opens the I/O library */
+  luaopen_string(L);         /* opens the string lib. */
+  luaopen_math(L);           /* opens the math lib. */
+
+  printf("echo %s", s);
+
+  error = luaL_loadbuffer(L, s, strlen(s), "line") ||
+          lua_pcall(L, 0, 0, 0);
+
+  lua_getglobal(L, "main");
+  lua_call(L, 0, 1);
+
+  stackDump(L, buffer);
+  //printf("buffer %s", buffer);
+
+  lua_close(L);
+  return buffer;
 }
 
 int main(void)
 {
+  char buffer[512];
   char buff[256];
   int error;
   lua_State *L = lua_open(); /* opens Lua */
@@ -59,7 +81,7 @@ int main(void)
   lua_getglobal(L, "bora");
   lua_call(L, 0, 1);
 
-  //printf("%s", stackDump(L));
+  printf("%s", stackDump(L, buffer));
 
   lua_close(L);
   return 0;
